@@ -1,41 +1,48 @@
-#include "hashset.h"
 #include <iostream>
+#include "hashset.h"
 using namespace std;
+
+HashSet setUnion(const HashSet& a, const HashSet& b) {
+    HashSet result;
+    a.forEach([&](const string& v, const string&) { result.add(v); });
+    b.forEach([&](const string& v, const string&) { result.add(v); });
+    return result;
+}
+
+HashSet setIntersection(const HashSet& a, const HashSet& b) {
+    HashSet result;
+    a.forEach([&](const string& v, const string&) { 
+        if (b.at(v)) result.add(v); 
+    });
+    return result;
+}
+
+HashSet setDifference(const HashSet& a, const HashSet& b) {
+    HashSet result;
+    a.forEach([&](const string& v, const string&) { 
+        if (!b.at(v)) result.add(v); 
+    });
+    return result;
+}
 
 void runSetOperations() {
     HashSet setA, setB;
     string val;
     
-    cout << "Введите элементы первого множества (end для конца): ";
+    cout << "Элементы 1-го мн-ва (end для конца): ";
     while (cin >> val && val != "end") setA.add(val);
-    
-    cout << "Введите элементы второго множества (end для конца): ";
+    cout << "Элементы 2-го мн-ва (end для конца): ";
     while (cin >> val && val != "end") setB.add(val);
 
-    cout << "Множество A: { ";
-    setA.forEach([](const string& v) { cout << v << " "; });
-    cout << "}\n";
+    cout << "Множество A: { "; setA.forEach([](const string& v, const string&){ cout << v << " "; }); cout << "}\n";
+    cout << "Множество B: { "; setB.forEach([](const string& v, const string&){ cout << v << " "; }); cout << "}\n";
 
-    cout << "Множество B: { ";
-    setB.forEach([](const string& v) { cout << v << " "; });
-    cout << "}\n";
+    HashSet uni = setUnion(setA, setB);
+    cout << "Объединение: { "; uni.forEach([](const string& v, const string&){ cout << v << " "; }); cout << "}\n";
 
-    HashSet uni;
-    setA.forEach([&](const string& v) { uni.add(v); });
-    setB.forEach([&](const string& v) { uni.add(v); });
-    cout << "Объединение (A U B): { ";
-    uni.forEach([](const string& v) { cout << v << " "; });
-    cout << "}\n";
+    HashSet inter = setIntersection(setA, setB);
+    cout << "Пересечение: { "; inter.forEach([](const string& v, const string&){ cout << v << " "; }); cout << "}\n";
 
-    HashSet inter;
-    setA.forEach([&](const string& v) { if (setB.at(v)) inter.add(v); });
-    cout << "Пересечение (A ∩ B): { ";
-    inter.forEach([](const string& v) { cout << v << " "; });
-    cout << "}\n";
-
-    HashSet diff;
-    setA.forEach([&](const string& v) { if (!setB.at(v)) diff.add(v); });
-    cout << "Разность (A \\ B): { ";
-    diff.forEach([](const string& v) { cout << v << " "; });
-    cout << "}\n";
+    HashSet diff = setDifference(setA, setB);
+    cout << "Разность: { "; diff.forEach([](const string& v, const string&){ cout << v << " "; }); cout << "}\n";
 }
